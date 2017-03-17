@@ -4,6 +4,8 @@ import {
   Form,
   FormGroup,
   FormControl,
+  Grid,
+  Row,
   Col,
   Button,
   ControlLabel,
@@ -11,10 +13,37 @@ import {
   Checkbox
 } from 'react-bootstrap'
 
-
+import Markdown from 'react-markdown'
 import _ from 'lodash'
 
 import style from './style.scss'
+
+const documentation = {
+  default: `
+
+  With Wordhop, humans and bots can tag team on conversations and delight your customers 24/7.  Connect a Slack team to Wordhop and connect Bots to Wordhop.  You can then monitor bots from Slack and take over live. You can use your own human agents, or invite outsourced human agents to a Slack channel to collaborate with your bot on customer service.  Wordhop alerts a Slack channel when a human should take over for a bot and then opens up a channel for you to chat live with your customer.  Wordhop will automatically resume your bot when you stop engaging with your customer and maintains a transcript of all bot and human interactions with each customer.   Wordhop supports bots built on Messenger and Slack.  Connect a bot in minutes and Wordhop begins working immediately.  
+
+  BONUS: Get core bot analytics delivered to Slack so you can identify bottlenecks in your conversational experience and optimize for results.
+
+  Step 1:  [Add Wordhop to Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,chat:write:user,channels:read,channels:history,files:write:user,channels:write,bot&client_id=23850726983.39760486257).
+
+  Step 2:  Tell the Wordhop bot about your bot.
+
+  Step 3:  Get your API Key and a Client Key.
+
+  Step 4:  Return to this screen and enter your keys in the form above.
+
+  Step 5:  Send your bot an intent you know it won't understand and you should receive an alert in Slack. 
+
+  Step 6: Add custom triggers to alert you in slack when a user may need assistance, such as when a user says \`human\'. See example below:
+
+  \`\`\`js
+  bp.hear({ platform: 'slack', type: 'message', text: 'human' }, (event, next) => {
+    bp.events.emit('assistanceRequested', event)
+  })
+  \`\`\`
+  `
+}
 
 export default class WordhopModule extends React.Component {
 
@@ -23,19 +52,14 @@ export default class WordhopModule extends React.Component {
 
     this.state = {
       loading: true,
-      'platform': 'slack',
 	  'apiKey': '',
 	  'clientKey': '',
-	  'token': '',
       hashState: null
     }
   }
 
   componentDidMount() {
     this.fetchConfig()
-    .then(() => {
-      this.authenticate()
-    })
   }
 
   getAxios = () => this.props.bp.axios
@@ -46,10 +70,8 @@ export default class WordhopModule extends React.Component {
   fetchConfig = () => {
     return this.mApiGet('/config').then(({data}) => {
       this.setState({
-        platform: data.platform,
         apiKey: data.apiKey,
-        clientkey: data.clientkey,
-        token: data.token,
+        clientKey: data.clientKey,
         loading: false
       })
 
@@ -61,33 +83,11 @@ export default class WordhopModule extends React.Component {
     })
   }
 
+  
+
   getHashState = () => {
     const values = _.omit(this.state, ['loading', 'hashState'])
     return _.join(_.toArray(values), '_')
-  }
-
-  getRedictURI = () => {
-    return this.state.hostname + "/modules/botpress-wordhop"
-  }
-
-  getOAuthLink = () => {
-    return "https://slack.com/oauth/pick" +
-      "?client_id=" + this.state.clientID +
-      "&scope=" + this.state.scope +
-      "&redirect_uri=" + this.getRedictURI()
-  }
-
-  getOAuthAccessLink = (code) => {
-    return "https://slack.com/api/oauth.access" +
-      "?client_id=" + this.state.clientID +
-      "&client_secret=" + this.state.clientSecret +
-      "&code=" + code +
-      "&redirect_uri=" + this.getRedictURI()
-  }
-
-  getOAuthTestLink = () => {
-    return "https://slack.com/api/auth.test" + 
-      "?token=" + this.state.apiToken
   }
 
   getParameterByName = (name) => {
@@ -100,50 +100,6 @@ export default class WordhopModule extends React.Component {
     return decodeURIComponent(results[2].replace(/\+/g, " "))
   }
 
-  isAuthenticate = () => {
-    if (!this.state.apiToken) return false
-
-    return this.getAxios().get(this.getOAuthTestLink())
-    .then(({data}) => {
-      if (data.ok) return true
-
-      throw new Error("An error occured while testing of your API Token...")
-    })
-    .catch((err) => {
-      console.log(err)
-      this.setState({ 
-        apiToken: null,
-        botToken: null
-      })
-      return false
-    })
-  }
-
-  authenticate = () => {
-    const code = this.getParameterByName('code')
-
-    if(!code || this.state.apiToken) return
-
-    this.getAxios().get(this.getOAuthAccessLink(code))
-    .then(({data}) => {
-      if (!data.ok) {
-        throw new Error("You encountered an error while authentification, the code doesn't seems to be valid...")
-      }
-
-      this.setState({
-        apiToken: data.access_token,
-        botToken: data.bot.bot_access_token
-      })
-
-      setImmediate(() => {
-        this.handleSaveConfig()
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
-
   handleChange = event => {
     const { name, value } = event.target
 
@@ -154,10 +110,8 @@ export default class WordhopModule extends React.Component {
 
   handleSaveConfig = () => {
     this.mApiPost('/config', {
-      platform: this.state.platform,
       apiKey: this.state.apiKey,
-      clientKey: this.state.clientKey,
-      token: this.state.token
+      clientKey: this.state.clientKey
     })
     .then(({data}) => {
       this.fetchConfig()
@@ -169,8 +123,8 @@ export default class WordhopModule extends React.Component {
 
 handleReset = () => {
   this.setState({
-    apiToken: null,
-    botToken: null
+    apiKey: null,
+    clientKey: null
   })
 
   setImmediate(() => {
@@ -185,6 +139,13 @@ handleReset = () => {
     <div className={style.header}>
       <h4>{title}</h4>
       {this.renderSaveButton()}
+    </div>
+  )
+
+
+  renderDocumentationHeader = title => (
+    <div className={style.header}>
+      <h4>{title}</h4>
     </div>
   )
 
@@ -239,13 +200,6 @@ handleReset = () => {
     </a>
   )
 
-  renderAuthentificationButton = () => { 
-    if (this.isAuthenticate()) {
-      return this.withNoLabel(this.renderBtn('Disconnect', this.handleReset))
-    }
-
-    return this.withNoLabel(this.renderLinkButton('Authenticate & Connect', this.getOAuthLink(), this.handleSaveConfig))
-  }
 
   renderSaveButton = () => {
     let opacity = 0
@@ -261,47 +215,42 @@ handleReset = () => {
       </Button>
   }
 
-  renderTokenInfo = () => {
-    return <div>
-      {this.renderTextInput('API token', 'apiToken', {
-        disabled: true
-      })}
-
-      {this.renderTextInput('Bot token', 'botToken', {
-        disabled: true
-      })}
-    </div>
-  }
-
   renderConfigSection = () => {
     return (
       <div className={style.section}>
         {this.renderHeader('Configuration')}
     
-        {this.renderTextInput('Hostname', 'hostname', {
-          placeholder: 'e.g. https://a9f849c4.ngrok.io',
+        {this.renderTextInput('API Key', 'apiKey', {
+          placeholder: 'Paste your api key here...',
         })}
 
-        {this.renderTextInput('Client ID', 'clientID', {
+        {this.renderTextInput('Client Key', 'clientKey', {
           placeholder: 'Paste your client id here...'
-        })}
-    
-        {this.renderTextInput('Client Secret', 'clientSecret', {
-          placeholder: 'Paste your client secret here...'
-        })}
-    
-        {this.renderTextInput('Verification Token', 'verificationToken', {
-          placeholder: 'Paste your verification token here...'
-        })}      
-
-        {this.renderTextInput('Scope', 'scope', {
-          placeholder: 'e.g. chat:write:bot,chat:write:user,dnd:read'
-        })}
-    
-        {this.isAuthenticate() ? this.renderTokenInfo() : null }
+        })} 
         
-        {this.renderAuthentificationButton()}
       </div>
+    )
+  }
+
+  renderDocumentationSection = () => {
+    return (
+      <div className={style.section}>
+        {this.renderDocumentationHeader('Documentation')}
+    
+        {this.renderExplication()}
+        
+      </div>
+    )
+  }
+
+  renderExplication() {
+
+    return (
+      <Row className={style.documentation}>
+        <Col sm={12}>
+          <Markdown source={documentation.default} />
+        </Col>
+      </Row>
     )
   }
 
@@ -313,6 +262,7 @@ handleReset = () => {
         <Form horizontal>
           {this.renderConfigSection()}
         </Form>
+        {this.renderDocumentationSection()}
       </Col>
   }
 }
