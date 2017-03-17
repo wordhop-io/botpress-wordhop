@@ -57,7 +57,6 @@ class Wordhop extends EventEmitter {
           } else if (msg.attachment.payload) {
               message = platformModule.createAttachment(msg.channel, msg.attachment.type, msg.attachment.payload.url)
           }
-          //message.text = ""
       }
       else if (msg.text.length > 0 && platformModule.createText) {
           message = platformModule.createText(msg.channel, msg.text)         
@@ -68,84 +67,6 @@ class Wordhop extends EventEmitter {
       bp.middlewares.sendOutgoing(message)
     })
 
-  }
-
-  convertToFacebookMessage(message) {
-
-    var facebook_message = {
-        recipient: {},
-        message: message.sender_action ? undefined : {}
-    }
-
-    if (typeof(message.channel) == 'string' && message.channel.match(/\+\d+\(\d\d\d\)\d\d\d\-\d\d\d\d/)) {
-        facebook_message.recipient.phone_number = message.channel
-    } else {
-        facebook_message.recipient.id = message.channel
-    }
-
-    if (!message.sender_action) {
-        if (message.text) {
-            facebook_message.message.text = message.text
-        }
-
-        if (message.attachment) {
-            facebook_message.message.attachment = message.attachment
-        }
-
-        if (message.sticker_id) {
-            facebook_message.message.sticker_id = message.sticker_id
-        }
-
-        if (message.quick_replies) {
-
-            // sanitize the length of the title to maximum of 20 chars
-            var titleLimit = function(title) {
-                if (title.length > 20) {
-                    var newTitle = title.substring(0, 16) + '...'
-                    return newTitle
-                } else {
-                    return title
-                }
-            }
-
-            facebook_message.message.quick_replies = message.quick_replies.map(function(item) {
-                var quick_reply = {}
-                if (item.content_type === 'text' || !item.content_type) {
-                    quick_reply = {
-                        content_type: 'text',
-                        title: titleLimit(item.title),
-                        payload: item.payload,
-                        image_url: item.image_url,
-                    }
-                } else if (item.content_type === 'location') {
-                    quick_reply = {
-                        content_type: 'location'
-                    }
-                } else {
-                    // Future quick replies types
-                }
-                return quick_reply
-            })
-        }
-    } else {
-        facebook_message.sender_action = message.sender_action
-    }
-
-    if (message.sender_action) {
-        facebook_message.sender_action = message.sender_action
-    }
-
-    if (message.notification_type) {
-        facebook_message.notification_type = message.notification_type
-    }
-
-    //Add Access Token to outgoing request
-    if (message.access_token) {
-        facebook_message.access_token = message.access_token
-    } else {
-        facebook_message.access_token = configuration.access_token
-    }
-    return facebook_message
   }
 
   setConfig(config) {
