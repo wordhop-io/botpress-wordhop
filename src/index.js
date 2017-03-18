@@ -2,7 +2,6 @@ import _ from 'lodash'
 import Promise from 'bluebird'
 import Wordhop from './wordhop'
 
-
 let wordhop = null
 
 const outgoingMiddleware = (event, next) => {
@@ -10,7 +9,7 @@ const outgoingMiddleware = (event, next) => {
   if (wordhop === null) {
     return next()
   }
-  var message = event.raw
+  var message = Object.assign({}, event.raw) // Clone the raw message
   if (event.platform === "slack") {
     message.channel = event.raw.channelId
   }
@@ -22,12 +21,10 @@ const outgoingMiddleware = (event, next) => {
   } else {
     message.text = ""
   }
-  console.log(message)
   
   wordhop.hopOut(event.platform, message)
   return next()
 }
-
 
 const incomingMiddleware = (event, next) => {
 
@@ -43,7 +40,6 @@ const incomingMiddleware = (event, next) => {
   })
 }
 
-
 const postProcessingIncomingMiddleware = (event, next) => {
   if (wordhop === null) {
     return next()
@@ -53,7 +49,6 @@ const postProcessingIncomingMiddleware = (event, next) => {
   }
   return next()
 }
-
 
 module.exports = {
 
@@ -97,7 +92,6 @@ module.exports = {
   ready: async function(bp, configurator) {
     const config = await configurator.loadAll()
 
-    
     const router = bp.getRouter('botpress-wordhop')
 
     const setConfigAndRestart = async newConfigs => {
@@ -111,13 +105,10 @@ module.exports = {
     }
 
     router.get('/config', async (req, res) => {
-      
-
       res.json(await configurator.loadAll())
     })
 
     router.post('/config', async (req, res) => {
-      
       setConfigAndRestart(req.body)
       res.json(await configurator.loadAll())
     })

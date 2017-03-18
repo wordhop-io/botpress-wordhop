@@ -6,23 +6,8 @@
  *
  */
 
-const Promise = require('bluebird')
-const EventEmitter = require('eventemitter2')
-const crypto = require('crypto')
-const fetch = require('node-fetch')
-const _ = require('lodash')
-const bodyParser = require('body-parser')
-//const actions_slack = require('./actions_slack')
-//const actions_messenger = require('./actions_messenger')
-fetch.promise = Promise
-
-const normalizeString = function(str) {
-  return str.replace(/[^a-zA-Z0-9]+/g, '').toUpperCase()
-}
-
-class Wordhop extends EventEmitter {
+class Wordhop {
   constructor(bp, config) {
-    super()
     if (!bp || !config) {
       throw new Error('You need to specify botpress and config')
     }
@@ -35,8 +20,7 @@ class Wordhop extends EventEmitter {
     })
 
     this.wordhop = require('wordhop')(config.apiKey, config.clientKey)
-    this.wordhop.on('chat response', function (msg) { 
-      console.log(msg)
+    this.wordhop.on('chat response', function (msg) {
       var platform = "facebook"
       var platformModule
       if (/[a-zA-Z]+/.test(msg.channel)) {
@@ -120,7 +104,6 @@ class Wordhop extends EventEmitter {
   module(factory) {
     return factory.apply(this, [ this ])
   }
-
   
 }
 
