@@ -14,6 +14,7 @@
     "compile": "node webpack.js --compile"
   },
   "author": "Michael Nathanson",
+  "homepage": "https://github.com/wordhop-io/botpress-wordhop",
   "license": "AGPL-3.0",
   "devDependencies": {
     "babel-core": "^6.18.2",
@@ -34,10 +35,11 @@
     "file-loader": "^0.9.0",
     "json-loader": "^0.5.4",
     "node-sass": "^3.11.2",
+    "raw-loader": "^0.5.1",
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.6",
-    "react-markdown": "^2.4.2",
     "react-dom": "^15.3.2",
+    "react-markdown": "^2.4.2",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
