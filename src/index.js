@@ -1,5 +1,7 @@
+import checkVersion from 'botpress-version-manager'
 import _ from 'lodash'
 import Promise from 'bluebird'
+
 import Wordhop from './wordhop'
 
 let wordhop = null
@@ -58,6 +60,8 @@ module.exports = {
   },
 
   init(bp) {
+
+    checkVersion(bp, __dirname)
 
     bp.middlewares.register({
       name: 'wordhop.hopOut',
