@@ -15,7 +15,17 @@ Step 5:  Send your bot an intent you know it won't understand and you should rec
 Step 6: Add custom triggers to alert you in slack when a user may need assistance, such as when a user says 'human'. See example below:
 
 ```js
-bp.hear({ platform: 'slack', type: 'message', text: 'human' }, (event, next) => {
-  bp.events.emit('assistanceRequested', event)
+// match an intent to talk to a real human
+bp.hear({ type: 'message', text: 'human' }, (event, next) => {
+  // let the user know that they are being routed to a human
+  var responseText = 'Hang tight. A human is on the way.'
+  if (event.platform == "facebook") {
+      bp.messenger.sendText(event.user.id, responseText)
+  } else if (event.platform == "slack") {
+      bp.slack.sendText(event.channel.id, responseText)
+  }
+  // send a Wordhop alert to your slack channel
+  // that the user could use assistance
+  bp.events.emit('assistanceRequested', {platform: event.platform, raw: event.raw})
 })
 ```
