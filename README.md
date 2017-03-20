@@ -17,7 +17,7 @@ You can view a full list of features at (https://www.wordhop.io).  It's core pur
 ### What you need to get started:
 * [A Slack Account](http://www.slack.com)
 * [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,chat:write:user,channels:read,channels:history,channels:write,bot&client_id=23850726983.39760486257)
-* [Botpress](https://botpress.io/)
+* [Botpress with Messenger and/or Slack module installed](https://botpress.io/)
 
 ##### Operational Dependencies:
 1.  You'll need an API key from Wordhop and for each Chatbot a Bot Token.  You can get both of those (free) when you add Wordhop to Slack and through a conversation with Wordhop. 
