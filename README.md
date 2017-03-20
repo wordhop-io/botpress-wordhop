@@ -42,12 +42,12 @@ Wordhop can trigger alerts to suggest when a human should take over for your Cha
 ```javascript
 // match an intent to talk to a real human
 bp.hear({ type: 'message', text: 'human' }, (event, next) => {
-// let the user know that they are being routed to a human
-var responseText = 'Hang tight. A human is on the way.'
-if (event.platform == "facebook") {
-bp.messenger.sendText(event.user.id, responseText)
+  // let the user know that they are being routed to a human
+  var responseText = 'Hang tight. A human is on the way.'
+  if (event.platform == "facebook") {
+  bp.messenger.sendText(event.user.id, responseText)
 } else if (event.platform == "slack") {
-bp.slack.sendText(event.channel.id, responseText)
+  bp.slack.sendText(event.channel.id, responseText)
 }
 // send a Wordhop alert to your slack channel
 // that the user could use assistance
