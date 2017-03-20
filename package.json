@@ -18,6 +18,10 @@
     "botpress-update": "^0.x",
     "module-downgrade": "~1.0.x"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wordhop-io/botpress-wordhop"
+  },
   "author": "Michael Nathanson",
   "homepage": "https://github.com/wordhop-io/botpress-wordhop",
   "license": "AGPL-3.0",
