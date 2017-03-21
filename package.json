@@ -1,6 +1,6 @@
 {
   "name": "botpress-wordhop",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Official Wordhop Botkit Module",
   "main": "bin/node.bundle.js",
   "botpress": {
@@ -8,6 +8,15 @@
     "menuIcon": "custom",
     "webBundle": "bin/web.bundle.js"
   },
+  "keywords": [
+    "hitl",
+    "human in the loop",
+    "takeover", 
+    "live takeover", 
+    "humans in the loop", 
+    "wordhop",
+    "take over"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "node webpack.js --watch",
