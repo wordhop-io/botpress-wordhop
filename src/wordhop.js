@@ -47,7 +47,7 @@ class Wordhop {
       }
       message.raw.slack_user = msg.slack_user
       message.raw.ts = msg.ts
-      bp.events.emit('Wordhophop.chat_response', msg)
+      bp.events.emit('wordhop.chat_response', msg)
       bp.middlewares.sendOutgoing(message)
     })
 
