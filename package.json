@@ -1,6 +1,6 @@
 {
   "name": "botpress-wordhop",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Official Wordhop Botkit Module",
   "main": "bin/node.bundle.js",
   "botpress": {
@@ -11,6 +11,7 @@
   "keywords": [
     "hitl",
     "human in the loop",
+    "botpress",
     "takeover", 
     "live takeover", 
     "humans in the loop", 
