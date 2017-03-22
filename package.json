@@ -1,6 +1,6 @@
 {
   "name": "botpress-wordhop",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official Wordhop Botkit Module",
   "main": "bin/node.bundle.js",
   "botpress": {
@@ -32,7 +32,7 @@
     "type": "git",
     "url": "https://github.com/wordhop-io/botpress-wordhop"
   },
-  "author": "Michael Nathanson",
+  "author": "Wordhop",
   "homepage": "https://github.com/wordhop-io/botpress-wordhop",
   "license": "AGPL-3.0",
   "devDependencies": {
