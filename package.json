@@ -1,6 +1,6 @@
 {
   "name": "botpress-wordhop",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Monitor bots and take over live from Slack",
   "main": "bin/node.bundle.js",
   "botpress": {
