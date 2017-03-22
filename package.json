@@ -1,7 +1,7 @@
 {
   "name": "botpress-wordhop",
   "version": "1.0.5",
-  "description": "Official Wordhop Botkit Module",
+  "description": "Official Wordhop Botpress Module",
   "main": "bin/node.bundle.js",
   "botpress": {
     "menuText": "Wordhop",
